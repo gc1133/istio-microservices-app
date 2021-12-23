@@ -1,0 +1,17 @@
+version: "3.7"
+
+services:
+  
+  product-service:
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    networks:
+      - istio-network
+    image: gc1133/product-service-without-mysql:1.0
+    
+    
+networks:
+  istio-network:
