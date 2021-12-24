@@ -1,6 +1,16 @@
 version: "3.7"
 
 services:
+
+  discount-service:
+    build:
+      context: ./discount-service
+      dockerfile: Dockerfile
+    ports:
+      - "9091:9091"
+    networks:
+      - istio-network
+    image: gc1133/discount-service-without-mysql:2.0
   
   product-service:
     build:
@@ -11,7 +21,10 @@ services:
     networks:
       - istio-network
     image: gc1133/product-service-without-mysql:1.0
-    
+    depends_on:
+      - discount-service
+    environment:
+      DISCOUNT_SERVICE_URL: http://discount-service:9091
     
 networks:
   istio-network:

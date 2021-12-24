@@ -4,6 +4,7 @@ public class Product {
 
 	private Long productId;
 	private String productName;
+	private String discount;
 
 	public Long getProductId() {
 		return productId;
@@ -21,6 +22,14 @@ public class Product {
 		this.productName = productName;
 	}
 
+	public String getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(String discount) {
+		this.discount = discount;
+	}
+	
 	public Product(Long productId, String productName) {
 		super();
 		this.productId = productId;
