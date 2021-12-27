@@ -64,7 +64,7 @@ istioctl install --set profile=demo
 kubectl get deployments -n istio-system
 ```
 * All the values in the AVAILABLE column will have a value of 1 after the deployment is complete.
-* Ensure that the Istio deployments are all available before you continue. The deployments might take a few minutes to become available. If the deployments aren’t available after a few minutes, then increase the amount of memory available to your Kubernetes cluster. On Docker Desktop, you can increase the memory from your Docker preferences. On Minikube, you can increase the memory by using the --memory flag
+* Ensure that the Istio deployments are all available before you continue. The deployments might take a few minutes to become available. If the deployments arenâ€™t available after a few minutes, then increase the amount of memory available to your Kubernetes cluster. On Docker Desktop, you can increase the memory from your Docker preferences. On Minikube, you can increase the memory by using the --memory flag
 * Finally, create the istio-injection label and set its value to enabled:
 ```
 kubectl label namespace default istio-injection=enabled
@@ -77,4 +77,29 @@ kubectl apply -f .\1_k8s_without_istio_routes.yml
 minikube service product-service --url
 while true; do curl -s http://127.0.0.1:60820/products/product/1 | grep discount; sleep 1; done
 ```
+### Canary deployment with istio service mesh
+```
+kubectl get all -n istio-system
+kubectl apply -f .\2_k8s_with_istio_routes.yml
+while true; do curl -s http://127.0.0.1/products/product/1 | grep discount; sleep 1; done
+```
 Here you will see the accurate round robin requests b/w both the version of apps
+
+## Tearing down your environment
+You might want to teardown all the deployed resources as a cleanup step.
+
+* Delete your resources from the cluster:
+```
+kubectl delete -f .\1_k8s_without_istio_routes.yml
+```
+* Delete the istio-injection label from the default namespace. The hyphen immediately after the label name indicates that the label should be deleted.
+```
+kubectl label namespace default istio-injection-
+```
+* Delete all Istio resources from the cluster:
+```
+istioctl x uninstall --purge
+```
+kubectl delete -f k8s/1_k8s_without_istio_routes.yml
+istioctl dashboard kiali
+kubectl apply -f k8s/2_k8s_with_istio_routes.yml

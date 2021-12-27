@@ -42,7 +42,7 @@ spec:
       targetPort: 9090
   selector:
     app: product-deployment
-  type: NodePort
+  type: LoadBalancer
 
 ---
 
@@ -114,3 +114,81 @@ spec:
       port: 9091
   selector:
     app: discount-deployment
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: istio-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+    
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: istiodemoservice
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - istio-gateway
+  http:
+  - match:
+    - uri:
+        exact: /
+    route:
+    - destination:
+        host: product-service
+        port:
+          number: 9090
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: discount-service-destination-rule
+spec:
+  host: discount-service
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: discount-service
+spec:
+  hosts:
+  - discount-service
+  http:
+  - route:
+    - destination:
+        host: discount-service
+        port:
+          number: 9091
+        subset: v1
+      weight: 100
+    - destination:
+        host: discount-service
+        port:
+          number: 9091
+        subset: v2
+      weight: 0
