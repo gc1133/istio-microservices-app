@@ -80,6 +80,7 @@ while true; do curl -s http://127.0.0.1:60820/products/product/1 | grep discount
 ### Canary deployment with istio service mesh
 ```
 kubectl get all -n istio-system
+minikube tunnel
 kubectl apply -f .\2_k8s_with_istio_routes.yml
 while true; do curl -s http://127.0.0.1/products/product/1 | grep discount; sleep 1; done
 ```
