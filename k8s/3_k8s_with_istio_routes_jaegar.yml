@@ -18,7 +18,7 @@ spec:
         version: v1
     spec:
       containers:
-        - image: gc1133/product-service-without-mysql:1.0
+        - image: gc1133/product-service-without-mysql_headers_propagation:1.0
           name: product-service
           ports:
             - containerPort: 9090
@@ -192,3 +192,13 @@ spec:
           number: 9091
         subset: v2
       weight: 10
+
+# ---
+# apiVersion: install.istio.io/v1alpha1
+# kind: IstioOperator
+# spec:
+#   meshConfig:
+#     enableTracing: true
+#     defaultConfig:
+#       tracing:
+#         sampling: 50
