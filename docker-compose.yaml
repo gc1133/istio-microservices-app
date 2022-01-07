@@ -20,7 +20,7 @@ services:
       - "9090:9090"
     networks:
       - istio-network
-    image: gc1133/product-service-without-mysql:1.0
+    image: gc1133/product-service-without-mysql_headers_propagation:1.0
     depends_on:
       - discount-service
     environment:
